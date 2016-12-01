@@ -1,2 +1,1 @@
-# Plug
-Plug Project
+Plug Prototyping
