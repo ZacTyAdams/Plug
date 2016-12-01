@@ -50,6 +50,16 @@
             <p class="event received">Connection established</p>
             <button id="signin" onclick="fire.signin()">Sign In</button>
         </div>
+        <div class="signup">
+            <input type="text" id="email" placeholder="Email"/>
+            <input type="password" id="password" placeholder="Password"/>
+            <button id="signup" onclick="fire.signup()">Sign Up</button>
+        </div>
+        <div class="userdata" id="udata">
+            <input type="text" id="name" placeholder="Name"/>
+            <button id="datasubmit" onclick="fire.datainput()">Submit</button>
+            <button id="dataread" onclick="fire.dataread()">Read</button>
+        </div>
         <p id="status">Waiting for signin</p>
     </div>
 

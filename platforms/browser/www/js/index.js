@@ -28,10 +28,12 @@ var app = {
                 var uid = user.uid;
                 document.getElementById('status').innerHTML = 'Signed In';
                 document.getElementById('signin').innerHTML = 'Sign Out';
+                document.getElementById('udata').style.visibility = "visible";
             }
             else{
                 document.getElementById("status").innerHTML = 'Signed Out';
                 document.getElementById("signin").innerHTML = 'Sign In';
+                document.getElementById('udata').style.visibility = "hidden";
             }
         });
     },
@@ -68,16 +70,77 @@ var fire = {
             firebase.auth().signOut();
         }
         else{
-            firebase.auth().signInAnonymously().catch(function(error){
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            if(email.length < 4){
+                alert('Please enter email address longer than 4 characters');
+                return;
+            }
+            if(email.length < 4){
+                alert('Please enter password longer than 4 characters');
+                return;
+            }
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error){
                 var errorCode = error.code;
                 var errorMessage = error.message;
-                if(errorCode === 'auth/operation-not-allowed'){
-                    alert('You must enable Anonymous auth in Firebase Console.');
+                if(errorCode === 'auth/wrong-password'){
+                    alert('Wrong Password');
                 }
                 else{
                     console.error(error);
                 }
             });
         }
+    },
+
+    signup: function(){
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        if(email < 4){
+            alert("Email must be more than 4 characters.");
+            return;
+        }
+        if(password < 4){
+            alert("Please enter a password greater than 4 characters.");
+            return;
+        } 
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error){
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            if (errorCode == 'auth/weak-password'){
+                alert('Password too weak.');
+            }
+            else{
+                alert(errorMessage);
+            }
+            console.log(error);
+        });
+    },
+
+    datainput: function(){
+        var database = firebase.database();
+        if(firebase.auth().currentUser){
+            var uid = firebase.auth().currentUser.uid;
+            var userinfo = {
+                name: document.getElementById('name').value
+            };
+            firebase.database().ref('users/' + uid).set(userinfo);
+            document.getElementById('status').innerHTML = "info sent";
+        }
+        else{
+            alert("It didn't work");
+        }
+    },
+
+    dataread: function(){
+        var database = firebase.database();
+        if(firebase.auth().currentUser){
+            var uid = firebase.auth().currentUser.uid;
+            firebase.database().ref('/users/' + uid).once('value').then(function(snapshot){
+                var nameholder = snapshot.val().name;
+                document.getElementById('status').innerHTML = nameholder;
+            });
+        }
     }
+
 }
